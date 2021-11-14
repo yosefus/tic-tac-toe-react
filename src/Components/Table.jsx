@@ -2,9 +2,7 @@ import React from 'react';
 import Box from './Box';
 import styles from './Table.module.css';
 
-export default function Table({ boardState, onClickBox }) {
-  const [board] = boardState;
-
+export default function Table({ board, onClickBox }) {
   return (
     <div className={`${styles.table} d-flex justify-content-center`}>
       {board.map((box, i) => (
