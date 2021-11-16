@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import Table from '../Components/Table';
+import { useEffect, useState } from 'react';
+// Components
+import { WinMsg, Table, PlayersBox } from '../Components';
 // style
 import 'bootstrap/dist/css/bootstrap.min.css';
-import WinMsg from '../Components/Messages/WinMsg';
+import styles from './TicTacToe.module.css';
+import { BsArrowClockwise, BsArrowLeftShort } from 'react-icons/bs/';
 // vars
-import { emptyBoard, winConditions, moves } from '../StaticVars';
+import { emptyBoard, winConditions } from '../StaticVars';
+import { Button } from 'react-bootstrap';
 
 export default function TicTacToe() {
   const [players, setPlayers] = useState({
@@ -15,72 +18,97 @@ export default function TicTacToe() {
 
   const [winner, setWinner] = useState(),
     [currentPlayer, setCurrentPlayer] = useState(player1),
-    [board, setBoard] = useState(emptyBoard);
+    [board, setBoard] = useState(emptyBoard),
+    [playsOrder, setPlaysOrder] = useState([]),
+    [ties, setTies] = useState(0);
 
   const onClickBox = (index) => {
-    if (board[index]) return null;
-
-    let tempBoard = [...board];
-    tempBoard[index] = currentPlayer.shape;
-    setBoard(tempBoard);
-
-    moves.order.push(index);
-
-    if (moves.order.length > 4 && checkWins(index, tempBoard)) return winActions();
-
-    changeCurrentPlayer();
+    if (!board[index]) {
+      setBoard(board.map((item, i) => (i === index && !item ? currentPlayer.shape : item)));
+      setPlaysOrder([...playsOrder, index]);
+    }
   };
 
-  const changeCurrentPlayer = () => setCurrentPlayer(currentPlayer == player1 ? player2 : player1);
+  const changeCurrentPlayer = () => setCurrentPlayer(currentPlayer === player1 ? player2 : player1);
 
-  function checkWins(lastAction, tempBoard) {
+  const checkWins = (lastAction) => {
     const possibleWinConditions = winConditions.filter((condition) => condition.includes(lastAction));
 
-    let win;
+    let winner;
+
     possibleWinConditions.forEach((arrWin) => {
-      if (
-        tempBoard[arrWin[0]] &&
-        tempBoard[arrWin[0]] === tempBoard[arrWin[1]] &&
-        tempBoard[arrWin[0]] === tempBoard[arrWin[2]]
-      )
-        win = true;
+      if (board[arrWin[0]] === board[arrWin[1]] && board[arrWin[0]] === board[arrWin[2]])
+        winner = board[arrWin[0]] === 'x' ? player1 : player2;
     });
 
-    if (win) return true;
-  }
-
-  const winActions = () => {
-    setWinner(currentPlayer);
-    resetTheGame();
-    addWinsToPlayer();
+    return winner;
   };
 
-  const addWinsToPlayer = () => {
+  const winActions = (winner) => {
+    setWinner(winner);
+    resetTheGame();
+    addWinsToPlayer(winner);
+  };
+
+  const addWinsToPlayer = (winner) => {
     let tempPlayers = { ...players };
-    currentPlayer === player1 ? tempPlayers['player1'].wins++ : tempPlayers['player2'].wins++;
+    winner.shape === 'x' ? tempPlayers['player1'].wins++ : tempPlayers['player2'].wins++;
     setPlayers(tempPlayers);
   };
 
   const resetTheGame = () => {
     setCurrentPlayer(player1);
     setBoard(emptyBoard);
-    moves.resetOrders();
+    setPlaysOrder([]);
+  };
+
+  const tieActions = () => {
+    setTies((tie) => tie++);
+    resetTheGame();
+  };
+
+  const goBackOnePlay = () => {
+    const { length } = playsOrder;
+
+    if (length) {
+      board[playsOrder[length - 1]] = '';
+      setPlaysOrder(playsOrder.filter((p, i) => i !== length - 1));
+    }
   };
 
   //   useEffect(() => {
-  //     let win;
-  //     if (PlaysOrder.length > 4) win = checkWins(PlaysOrder[PlaysOrder.length - 1]);
-  //     if (!win) changeCurrentPlayer();
-  //   }, [board]);
+  //     console.log(playsOrder, board);
+  //   }, [playsOrder]);
+
+  useEffect(() => {
+    if (playsOrder.length > 4) {
+      let winner = checkWins(playsOrder[playsOrder.length - 1]);
+      if (winner) return winActions(winner);
+    }
+
+    if (playsOrder.length === 9) return tieActions();
+
+    changeCurrentPlayer();
+  }, [board, playsOrder]);
+
+  const ButtonGroupTable = (
+    <div className={styles.btnGroup}>
+      <Button disabled={!playsOrder.length && true} onClick={resetTheGame} variant="outline-danger">
+        <BsArrowClockwise className="me-1" /> אתחל משחק
+      </Button>
+      <Button disabled={!playsOrder.length && true} onClick={goBackOnePlay} variant="outline-info">
+        <BsArrowLeftShort className="me-1" />
+        חזור
+      </Button>
+    </div>
+  );
 
   return (
-    <div>
+    <div className={styles.ticPage}>
+      <PlayersBox players={players} ties={ties} />
       <Table board={board} onClickBox={onClickBox} />
-      {winner ? (
-        <div onClick={() => setWinner()}>
-          <WinMsg winner={winner} />
-        </div>
-      ) : null}
+      {ButtonGroupTable}
+      {winner && <WinMsg winner={winner} setWinner={setWinner} />}
     </div>
   );
 }

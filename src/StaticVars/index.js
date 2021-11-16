@@ -11,6 +11,4 @@ const winConditions = [
   [2, 4, 6],
 ];
 
-let moves = { order: [], resetOrders: () => (moves.order = []) };
-
-export { winConditions, emptyBoard, moves };
+export { winConditions, emptyBoard };

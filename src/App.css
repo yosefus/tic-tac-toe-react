@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&display=swap');
+
+* {
+  font-family: 'Assistant', sans-serif;
+}
+
+.h100 {
+  min-height: 100vh;
+}
+
+.app-back {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./Media/backGame.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.trans-back {
+  background: transparent !important;
+  color: #fff;
+}
