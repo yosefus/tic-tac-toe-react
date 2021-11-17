@@ -9,10 +9,10 @@ import { BsArrowClockwise, BsArrowLeftShort } from 'react-icons/bs/';
 import { emptyBoard, winConditions } from '../StaticVars';
 import { Button } from 'react-bootstrap';
 
-export default function TicTacToe() {
+export default function TicTacToe({ playersNames }) {
   const [players, setPlayers] = useState({
-      player1: { shape: 'x', wins: 0, name: 'avi' },
-      player2: { shape: 'o', wins: 0, name: 'mike' },
+      player1: { shape: 'x', wins: 0, name: playersNames['x'] },
+      player2: { shape: 'o', wins: 0, name: playersNames['o'] },
     }),
     { player1, player2 } = players;
 
@@ -63,7 +63,7 @@ export default function TicTacToe() {
   };
 
   const tieActions = () => {
-    setTies((tie) => tie++);
+    setTies((tie) => tie + 1);
     resetTheGame();
   };
 
