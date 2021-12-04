@@ -5,7 +5,7 @@ export default function PlayersBox({ players, ties }) {
   const { player1, player2 } = players;
 
   return (
-    <div dir="rtl" className="d-flex justify-content-between pt-3 pb-3">
+    <div dir="rtl" className="d-flex justify-content-between pt-1 pb-1">
       <Card className="trans-back">
         <Card.Body>
           <Card.Title>שחקן X</Card.Title>

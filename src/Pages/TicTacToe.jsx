@@ -91,7 +91,7 @@ export default function TicTacToe({ playersNames }) {
     changeCurrentPlayer();
   }, [board, playsOrder]);
 
-  const ButtonGroupTable = (
+  const ButtonGroupTable = () => (
     <div className={styles.btnGroup}>
       <Button disabled={!playsOrder.length && true} onClick={resetTheGame} variant="outline-danger">
         <BsArrowClockwise className="me-1" /> אתחל משחק
@@ -107,7 +107,7 @@ export default function TicTacToe({ playersNames }) {
     <div className={styles.ticPage}>
       <PlayersBox players={players} ties={ties} />
       <Table board={board} onClickBox={onClickBox} />
-      {ButtonGroupTable}
+      <ButtonGroupTable />
       {winner && <WinMsg winner={winner} setWinner={setWinner} />}
     </div>
   );
