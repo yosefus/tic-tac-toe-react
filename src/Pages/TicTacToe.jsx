@@ -89,7 +89,7 @@ export default function TicTacToe({ playersNames }) {
     if (playsOrder.length === 9) return tieActions();
 
     changeCurrentPlayer();
-  }, [board, playsOrder]);
+  }, [board, playsOrder, changeCurrentPlayer]);
 
   const ButtonGroupTable = () => (
     <div className={styles.btnGroup}>
