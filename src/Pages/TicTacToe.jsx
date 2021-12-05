@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // Components
 import { WinMsg, Table, PlayersBox } from '../Components';
 // style
@@ -10,6 +10,8 @@ import { emptyBoard, winConditions } from '../StaticVars';
 import { Button } from 'react-bootstrap';
 
 export default function TicTacToe({ playersNames }) {
+  const ref = useRef(null);
+
   const [players, setPlayers] = useState({
       player1: { shape: 'x', wins: 0, name: playersNames['x'] },
       player2: { shape: 'o', wins: 0, name: playersNames['o'] },
@@ -80,7 +82,7 @@ export default function TicTacToe({ playersNames }) {
   //     console.log(playsOrder, board);
   //   }, [playsOrder]);
 
-  useEffect(() => {
+  const checkAllWins = () => {
     if (playsOrder.length > 4) {
       let winner = checkWins(playsOrder[playsOrder.length - 1]);
       if (winner) return winActions(winner);
@@ -89,7 +91,13 @@ export default function TicTacToe({ playersNames }) {
     if (playsOrder.length === 9) return tieActions();
 
     changeCurrentPlayer();
-  }, [board, playsOrder, changeCurrentPlayer]);
+  };
+
+  ref.current = checkAllWins;
+
+  useEffect(() => {
+    ref.current();
+  }, [board]);
 
   const ButtonGroupTable = () => (
     <div className={styles.btnGroup}>
